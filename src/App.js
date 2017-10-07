@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-//NEW IMPORTS 
+//NEW IMPORTS
 // To make this component work we need to 'connect' it with our top level redux store
 import { connect } from 'react-redux'
-import { updateName, addPerson } from './reducer'
+import { updateName, addPerson, updateExcitementLevel } from './ActionCreators'
 
 class App extends Component {
   render() {
@@ -21,9 +21,11 @@ class App extends Component {
     return (
       <div className="App">
         <p>
+          <h1>Mark is this excited: {this.props.markExcitementLevel}</h1>
+          <button onClick={() => this.props.updateExcitementLevel()}>Find Mark a Cool Tropical House to Buy</button>
           <h4>{name}</h4>
           <input type="text" ref="name"/>
-          <button onClick={()=> this.props.updateName(this.refs.name.value)}>Update</button>    
+          <button onClick={()=> this.props.updateName(this.refs.name.value)}>Update</button>
         </p>
         <p>
           <h4>New Person</h4>
@@ -48,7 +50,7 @@ function moveFromStoreToProps(state) {
   //state refers to the redux state
   if(!state) return {};
 
-  let {people, name} = state;
+  let {people, name, markExcitementLevel} = state;
 
   // return { //This object gets mashed/merged into this.props
   //   people,
@@ -56,7 +58,8 @@ function moveFromStoreToProps(state) {
   // }
   return { //This object gets mashed/merged into this.props
     people: people,
-    name: name
+    name: name,
+    markExcitementLevel: markExcitementLevel
   }
 }
 
@@ -67,12 +70,13 @@ function moveFromStoreToProps(state) {
 // import {updateAge, addPerson} from './reducer'
 let outputActions = {
   updateName: updateName,
-  addPerson: addPerson
+  addPerson: addPerson,
+  updateExcitementLevel: updateExcitementLevel
 }
 
-let reduxInsAndOuts = connect(moveFromStoreToProps, outputActions)
+let reduxInsAndOuts = connect(moveFromStoreToProps, outputActions)  //Better known as mapStateToProps, mapDispatchToProps; connect is expecting both of those, and in exactly that order
 export default reduxInsAndOuts(App);
 //This is often done in a single line of code like this:
-//connect(mapStateToProps, outputActions)(App)
+//export default connect(mapStateToProps, outputActions)(App)
 
 //Note: Usually App is not connected.  This is done in each route (when needed), and sometimes in a component
